@@ -42,3 +42,29 @@ ALTER TABLE `tags`
 
 ALTER TABLE `views`
   MODIFY `id` int(6) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=308;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_blog` (IN `blog_id` INT)   BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+    START TRANSACTION;
+    DELETE FROM blog_tags WHERE blog_id = blog_id;
+    DELETE FROM blogs WHERE id = blog_id;
+    DELETE FROM views WHERE content_id = blog_id;
+    COMMIT;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_tag` (IN `tag_id` INT)   BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+    START TRANSACTION;
+    DELETE FROM blog_tags WHERE tag_id = tag_id;
+    DELETE FROM tags WHERE id = tag_id;
+    COMMIT;
+END$$
+DELIMITER ;
+
