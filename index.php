@@ -186,6 +186,7 @@
             <!-- highlightjs -->
             <link rel="stylesheet" href="../assets/css/atom-one-dark.min.css">
             <script src="../assets/js/highlight.min.js"></script>
+            <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
         </head>
         <?php
     }
