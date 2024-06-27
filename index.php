@@ -1,5 +1,6 @@
 <?php class blog
 {
+    public $domain = "https://yourdns";
     private $routes = [];
     public $url;
     public $servername = "localhost";
@@ -126,7 +127,7 @@
 
     public function nf()
     {
-        $this->header('Not Found'); ?>
+        $this->header('Not Found',$this->name,"Not Found" ,"Notfound",$this->domain); ?>
 
         <body class='font-sans mx-auto max-w-prose'>
             <div class='pt-12 pb-4'>
@@ -155,7 +156,7 @@
         </body>
         <?php
     }
-    public function header($doc_title)
+    public function header($doc_title, $author , $description, $keyword, $domain)
     { ?>
         <!DOCTYPE html>
         <html lang=" en-US">
@@ -164,6 +165,19 @@
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <meta charset="utf-8">
             <title><?php echo $doc_title; ?></title>
+
+            <!-- SEO Meta Tags -->
+            <meta name="description" content="<?php echo $description; ?>">
+            <meta name="keywords" content="<?php echo $keyword; ?>">
+            <meta name="author" content="<?php echo $author; ?>">
+
+            <!-- Open Graph Meta Tags -->
+            <meta property="og:title" content="<?php echo $doc_title; ?>">
+            <meta property="og:description" content="<?php echo $description; ?>">
+            <meta property="og:image" content="assets/img/profile.jpg">
+            <meta property="og:url" content="<?php echo $domain; ?>">
+            <meta property="og:type" content="website">
+
             <!-- TailwindCSS and Inter Font-->
             <link rel="stylesheet" href="../assets/css/tailwind.css">
             <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
@@ -257,51 +271,59 @@
     }
 
     public function blog($topic)
-    {
-        $this->header('Blog');
-        $result = $this->getBlogs($this->conn, $topic);
-
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $blog_id = $row["id"];
-                $this->incrementViews($this->conn, $blog_id);
-                ?>
-
-                <body class="font-sans mx-auto max-w-prose">
-                    <div class="pt-12 pb-4">
-                        <?php $this->navbar(); ?>
-                        <div class="px-4 pt-4 prose prose-indigo">
-                            <h1 class="text-center mt-6 mb-6">
-                                <?php echo $row["title"]; ?>
-                            </h1>
-                            <div class="text-center">
-                                <?php $getTagresult = $this->getTags($this->conn, $blog_id);
-                                if ($getTagresult->num_rows > 0) {
-                                    while ($tag = $getTagresult->fetch_assoc()) {
-                                        ?>
-                                        <div
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                                            <a class="!no-underline" href="../tag/<?php echo $tag['tag_name']; ?>">
-                                                <?php echo $tag['tag_name']; ?>
-                                            </a>
-                                        </div>
-                                        <?php
-                                    }
-                                }
-                                ?>
-                            </div>
-                            <?php echo $row["hypertext"]; ?>
-                        </div>
-                    </div>
-                </body>
-
-                <?php
+{
+    $result = $this->getBlogs($this->conn, $topic);
+    
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $blog_id = $row["id"];
+            $this->incrementViews($this->conn, $blog_id);
+            $getTagresult = $this->getTags($this->conn, $blog_id);
+            
+            $tags = [];
+            if ($getTagresult->num_rows > 0) {
+                while ($tag = $getTagresult->fetch_assoc()) {
+                    $tags[] = $tag['tag_name'];
+                }
             }
-            $this->footer();
-        } else {
-            $this->nf();
+
+            $tagsString = implode(', ', $tags);
+
+            $this->header('Blog', $this->name, $row['shortdesc'], $tagsString,$this->domain);
+            ?>
+            
+            <body class="font-sans mx-auto max-w-prose">
+                <div class="pt-12 pb-4">
+                    <?php $this->navbar(); ?>
+                    <div class="px-4 pt-4 prose prose-indigo">
+                        <h1 class="text-center mt-6 mb-6">
+                            <?php echo $row["title"]; ?>
+                        </h1>
+                        <div class="text-center">
+                            <?php 
+                            foreach ($tags as $tag) {
+                                ?>
+                                <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                    <a class="!no-underline" href="../tag/<?php echo $tag; ?>">
+                                        <?php echo $tag; ?>
+                                    </a>
+                                </div>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                        <?php echo $row["hypertext"]; ?>
+                    </div>
+                </div>
+            </body>
+            
+            <?php
         }
+        $this->footer();
+    } else {
+        $this->nf();
     }
+}
 
     public function navbar()
     { ?>
@@ -330,7 +352,7 @@
         </nav><?php }
     public function bloglist()
     {
-        $this->header('Blog'); ?>
+        $this->header('Blog List', $this->name,"Blog List", "Blog List",$this->domain); ?>
 
         <body class="font-sans mx-auto max-w-prose">
             <div class="pt-12 pb-4"><?php $this->navbar() ?>
@@ -364,7 +386,7 @@
     }
     public function home()
     {
-        $this->header($this->name); ?>
+        $this->header($this->name, $this->name, "Personal website of ".$this->name.", showcasing blog posts, projects, and professional profiles.","".$this->name." personal website, blog, projects, professional profiles",$this->domain); ?>
 
             <body class="font-sans mx-auto max-w-prose">
                 <div class="pt-12 pb-4"><?php $this->navbar() ?>
@@ -422,7 +444,7 @@
     }
     public function taglist()
     {
-        $this->header('Tag'); ?>
+        $this->header('Tag List' , $this->name,"Tag list for blog" , "Tag List",$this->domain); ?>
 
                 <body class="font-sans mx-auto max-w-prose">
                     <div class="pt-12 pb-4"><?php $this->navbar() ?>
@@ -445,7 +467,7 @@
     }
     public function tag($tag)
     {
-        $this->header('Tag Specify'); ?>
+        $this->header('Tag Specify', $this->name,$tag,$tag,$this->domain); ?>
 
                     <body class="font-sans mx-auto max-w-prose">
                         <div class="pt-12 pb-4"><?php $this->navbar() ?>
