@@ -187,8 +187,8 @@
             <link rel="stylesheet" href="../assets/css/atom-one-dark.min.css">
             <script src="../assets/js/highlight.min.js"></script>
             <!-- viewerjs -->
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.min.css">
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.min.js"></script>
+            <link rel="stylesheet" href="../assets/css/viewer.min.css">
+            <script src="../assets/js/viewer.min.js"></script>
             <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
         </head>
         <?php
