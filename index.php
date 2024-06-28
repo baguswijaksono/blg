@@ -186,6 +186,9 @@
             <!-- highlightjs -->
             <link rel="stylesheet" href="../assets/css/atom-one-dark.min.css">
             <script src="../assets/js/highlight.min.js"></script>
+            <!-- viewerjs -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.min.css">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.10.5/viewer.min.js"></script>
             <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
         </head>
         <?php
@@ -207,6 +210,20 @@
                 document.getElementById(dropdownID).classList.toggle("hidden");
                 document.getElementById(dropdownID).classList.toggle("block");
             }
+            
+  document.addEventListener('DOMContentLoaded', function () {
+    var gallery = document.getElementById('gallery');
+    var viewer = new Viewer(gallery, {
+      // Options (optional)
+      navbar: true,
+      toolbar: true,
+      tooltip: true,
+      fullscreen: true,
+      viewed() {
+        viewer.zoomTo(1);
+      }
+    });
+  });
         </script>
         </body>
 
