@@ -333,7 +333,6 @@
                         <?php echo $row["hypertext"]; ?>
                     </div>
                 </div>
-            </body>
             
             <?php
         }
