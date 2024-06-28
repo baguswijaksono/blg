@@ -400,6 +400,7 @@
                     </div>
                 </div>
             </div><?php
+        $this->footer();
     }
     public function home()
     {
