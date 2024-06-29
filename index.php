@@ -342,31 +342,35 @@
     }
 }
 
-    public function navbar()
-    { ?>
-        <nav class="flex flex-wrap items-center justify-center px-2 mb-6">
-            <div class="container px-4 mx-auto flex flex-wrap items-center justify-center">
-                <div class="w-full relative flex justify-center"><button type="button" onclick="toggleNavbar('navbar')"
-                        class="rounded-md inline-flex items-center justify-center text-gray-500 md:hidden"
-                        aria-expanded="false"><span class="sr-only">Open menu</span>
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg></button></div>
-                <div class="flex hidden md:block" id="navbar">
-                    <div class="flex flex-col md:flex-row mr-auto w-full">
-                        <?php $menuItems = ['Home' => '/', 'Blog' => '/blog', 'Tag' => '/tag'];
-                        $currentEndpoint = $_SERVER['REQUEST_URI'];
-                        $lastSegment = basename($currentEndpoint);
-                        foreach ($menuItems as $label => $url) {
-                            $isActive = ($lastSegment == strtolower($label)) ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900'; ?><a
-                                class="text-sm <?= $isActive ?> px-3 py-2 lg:py-1 mx-auto uppercase <?= $isActive == 'text-gray-900' ? 'active' : '' ?>"
-                                href="<?= $url ?>"><?= $label ?></a><?php
-                        } ?>
-                    </div>
+public function navbar()
+{ ?>
+    <nav class="flex flex-wrap items-center justify-center px-2 mb-6">
+        <div class="container px-4 mx-auto flex flex-wrap items-center justify-center">
+            <div class="w-full relative flex justify-center">
+                <button type="button" onclick="toggleNavbar('navbar')" class="rounded-md inline-flex items-center justify-center text-gray-500 md:hidden" aria-expanded="false">
+                    <span class="sr-only">Open menu</span>
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex hidden md:block" id="navbar">
+                <div class="flex flex-col md:flex-row mr-auto w-full">
+                    <?php 
+                    $menuItems = ['Home' => '/', 'Blog' => '/blog', 'Tag' => '/tag'];
+                    $currentEndpoint = rtrim($_SERVER['REQUEST_URI'], '/');
+                    foreach ($menuItems as $label => $url) {
+                        if ($currentEndpoint != rtrim($url, '/')) {
+                            $isActive = ($currentEndpoint == rtrim($url, '/')) ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900'; ?>
+                            <a class="text-sm <?= $isActive ?> px-3 py-2 lg:py-1 mx-auto uppercase <?= $isActive == 'text-gray-900' ? 'active' : '' ?>" href="<?= $url ?>"><?= $label ?></a><?php
+                        }
+                    } ?>
                 </div>
             </div>
-        </nav><?php }
+        </div>
+    </nav>
+<?php }
+    
     public function bloglist()
     {
         $this->header('Blog List', $this->name,"Blog List", "Blog List",$this->domain); ?>
