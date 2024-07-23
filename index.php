@@ -1,12 +1,39 @@
-<?php class blog
+<?php 
+
+function loadEnv($filePath)
+{
+    if (file_exists($filePath)) {
+        $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            // Remove comments and whitespace
+            $line = trim($line);
+            if (strpos($line, '#') === 0 || empty($line)) {
+                continue;
+            }
+            // Split into key and value
+            list($key, $value) = explode('=', $line, 2) + [NULL, NULL];
+            if (!is_null($key)) {
+                $key = trim($key);
+                $value = trim($value);
+                // Assign to $_ENV and getenv
+                $_ENV[$key] = $value;
+                putenv("$key=$value");
+            }
+        }
+    }
+}
+
+loadEnv(__DIR__ . '/.env');
+
+class blog
 {
     public $domain = "https://yourdns";
     private $routes = [];
     public $url;
-    public $servername = "localhost";
-    public $username = "root";
-    public $password = "";
-    public $dbname = "blog";
+    public $servername;
+    public $username;
+    public $password;
+    public $dbname;
     public $conn;
     private $name;
     public $hashed_password = '$2y$10$v4Zr9MgjWSDa1vM1l6RHgOeX/joovOcp217fxNvhB5YdFu1Ukak5O';
@@ -93,6 +120,12 @@
     }
     public function __construct()
     {
+        // Set database credentials from environment variables
+        $this->servername = getenv('DB_SERVERNAME') ?: 'localhost';
+        $this->username = getenv('DB_USERNAME') ?: 'root';
+        $this->password = getenv('DB_PASSWORD') ?: '';
+        $this->dbname = getenv('DB_NAME') ?: 'blog';
+
         $this->conn = mysqli_connect($this->servername, $this->username, $this->password, $this->dbname);
         if (!$this->conn) {
             die("Connection failed: " . mysqli_connect_error());
@@ -120,6 +153,7 @@
             ]
         ];
     }
+
     public function __destruct()
     {
         mysqli_close($this->conn);
