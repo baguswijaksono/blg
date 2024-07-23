@@ -1,11 +1,3 @@
-<h1 align=center>Blog</h1>
-
-<p align=center>
-    An extremely clean UI, simple-to-use, and minimalist personal website for blogging. 
-</p>
-
-![Alt text](https://baguswinaksono.my.id/assets/img/personal.png)
-
 ## Installation
 
 ### Local
