@@ -478,9 +478,10 @@ public function navbar()
                 $title = $_POST['title'];
                 $shortdesc = $_POST['shortdesc'];
                 $hypertext = $_POST['hypertext'];
-                $sql = "INSERT INTO blogs (topic, docname, title, shortdesc, hypertext) VALUES (?, ?, ?, ?, ?)";
+                $is_public = $_POST['is_public']; // Add the is_public field
+                $sql = "INSERT INTO blogs (topic, docname, title, shortdesc, hypertext, is_public) VALUES (?, ?, ?, ?, ?, ?)";
                 $stmt = mysqli_prepare($this->conn, $sql);
-                mysqli_stmt_bind_param($stmt, "sssss", $topic, $docname, $title, $shortdesc, $hypertext);
+                mysqli_stmt_bind_param($stmt, "sssssi", $topic, $docname, $title, $shortdesc, $hypertext, $is_public);
 
                 if (mysqli_stmt_execute($stmt)) {
                     $this->returnToHome();
@@ -785,6 +786,12 @@ public function navbar()
                                         <?php if ($type == 'doc'): ?>
                                             <input name="doc_id" type="hidden"
                                                 value="<?php echo $row['id'] ?>"><?php endif; ?><?php endif; ?>
+                                    <label class="form-check-label" for="is_public">Is Public:</label>
+                                    <select class="form-control" id="is_public" name="is_public">
+                                        <option value="0" <?php echo ($row && $row['is_public'] == 0) ? 'selected' : ''; ?>>0</option>
+                                        <option value="1" <?php echo ($row && $row['is_public'] == 1) ? 'selected' : ''; ?>>1</option>
+                                    </select>
+                                    <br>
                                     <input class="btn btn-dark" type="submit" value="<?php echo $submitButtonText; ?>">
                                 </form>
                                 <script>
@@ -895,11 +902,12 @@ public function navbar()
         $title = $_POST['title'];
         $hypertext = $_POST['hypertext'];
         $shortdesc = $_POST['shortdesc'];
+        $is_public = $_POST['is_public']; 
         if (password_verify($_SESSION['original_password'], $this->hashed_password)) {
-            $sql = "UPDATE `blogs` SET `topic` = ?, `docname` = ?, `title` = ?, `hypertext` = ?,`shortdesc` = ? WHERE `blogs`.`id` = ?;";
+            $sql = "UPDATE `blogs` SET `topic` = ?, `docname` = ?, `title` = ?, `hypertext` = ?, `shortdesc` = ?, `is_public` = ? WHERE `blogs`.`id` = ?;";
             $stmt = mysqli_prepare($this->conn, $sql);
             if ($stmt) {
-                mysqli_stmt_bind_param($stmt, "sssssi", $topic, $docname, $title, $hypertext, $shortdesc, $blog_id);
+                mysqli_stmt_bind_param($stmt, "sssssii", $topic, $docname, $title, $hypertext, $shortdesc, $is_public, $blog_id);
                 if (mysqli_stmt_execute($stmt)) {
                     $this->returnToHome();
                 } else {
