@@ -5,17 +5,14 @@ function loadEnv($filePath)
     if (file_exists($filePath)) {
         $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
-            // Remove comments and whitespace
             $line = trim($line);
             if (strpos($line, '#') === 0 || empty($line)) {
                 continue;
             }
-            // Split into key and value
             list($key, $value) = explode('=', $line, 2) + [NULL, NULL];
             if (!is_null($key)) {
                 $key = trim($key);
                 $value = trim($value);
-                // Assign to $_ENV and getenv
                 $_ENV[$key] = $value;
                 putenv("$key=$value");
             }
@@ -120,7 +117,6 @@ class blog
     }
     public function __construct()
     {
-        // Set database credentials from environment variables
         $this->servername = getenv('DB_SERVERNAME') ?: 'localhost';
         $this->username = getenv('DB_USERNAME') ?: 'root';
         $this->password = getenv('DB_PASSWORD') ?: '';
@@ -413,7 +409,7 @@ public function navbar()
             <div class="pt-12 pb-4"><?php $this->navbar() ?>
                 <div class="px-4 pt-4 prose prose-indigo">
                     <h1 class="text-center mt-6 mb-6">Blog</h1>
-                    <div><?php $sql = "SELECT * FROM blogs";
+                    <div><?php $sql = "SELECT * FROM blogs WHERE is_public = 1";
                     $result = mysqli_query($this->conn, $sql);
                     if (mysqli_num_rows($result) > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
@@ -1031,3 +1027,4 @@ public function navbar()
 }
 $blog = new blog();
 $blog->listen();
+
