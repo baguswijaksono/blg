@@ -83,6 +83,7 @@ CREATE TABLE `blogs` (
   `title` longtext NOT NULL,
   `hypertext` longtext DEFAULT NULL,
   `shortdesc` varchar(255) DEFAULT NULL,
+    `is_public` BOOLEAN DEFAULT NULL, -- Add the boolean nullable field here
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
